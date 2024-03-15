@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var AuthorSchema = new Schema(
+var AuthorSchema = new Schema( // collection, all documents should obey this structure
   {
     first_name: {type: String, required: true, maxLength: 100},
     family_name: {type: String, required: true, maxLength: 100},
@@ -28,7 +28,16 @@ AuthorSchema
 });
 
 // Virtual for author's lifespan
-AuthorSchema.virtual('lifespan').get(function() {});
+AuthorSchema.virtual('lifespan').get(function() {
+  var lifespan = '';
+  if (this.date_of_death) {
+    lifespan = this.date_of_birth + ' - ' + this.date_of_death
+  }
+  if (!this.date_of_death) {
+    lifespan = this.date_of_birth + ' - ';
+  }
+  return lifespan;
+});
 
 //Export model
 module.exports = mongoose.model('Author', AuthorSchema);
